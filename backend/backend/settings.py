@@ -7,7 +7,7 @@ SECRET_KEY = '2t@oor6^6#5h0dr^c)@=+*(%*07t#-f47oooc6cv4%1%#g=h1d'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -16,6 +16,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djoser',
+    'rest_framework',
+    'rest_framework.authtoken'
+    'users',
+    'api',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
