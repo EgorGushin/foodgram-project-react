@@ -18,10 +18,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'djoser',
     'rest_framework',
-    'rest_framework.authtoken'
+    # 'rest_framework.authtoken'
     'users',
     'api',
-    'django_filters'
+    # 'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -76,7 +76,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -87,3 +87,5 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+AUTH_USER_MODEL = "users.CustomUser"

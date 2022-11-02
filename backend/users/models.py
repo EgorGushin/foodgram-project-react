@@ -3,41 +3,42 @@ from django.db.models import CharField, EmailField, ManyToManyField
 
 
 class CustomUser(AbstractUser):
+
     username = CharField(
         verbose_name='Уникальный username',
-        max_lenght=150,
+        max_length=150,
         unique=True,
-        help_text='Укажите username не более 150 символов'
-    )
-    password = CharField(
-        verbose_name='Пароль',
-        max_lenght=150,
-        help_text='Пароль для входа'
+        help_text='Укажите username от 3 до 150 букв',
     )
     email = EmailField(
         verbose_name='Адрес электронной почты',
-        max_lenght=254,
+        max_length=254,
         unique=True,
         help_text='Введите адрес электронной почты'
     )
     first_name = CharField(
-        verbose_name='Ваше имя',
-        max_lenght=150,
-        help_text='Введите ваше имя'
+        verbose_name='Имя',
+        max_length=150,
+        blank=True
     )
     last_name = CharField(
-        verbose_name='Ваша фамилия',
-        max_lenght=150,
-        help_text='Введите вашу фамилию'
+        verbose_name='Фамилия',
+        max_length=150,
+        blank=True
+    )
+    password = CharField(
+        verbose_name='password',
+        max_length=150
     )
     subscribe = ManyToManyField(
         verbose_name='Подписка',
-        related_name='subscribes',
+        related_name='subscribers',
         to='self',
-        symmetrical=False
+        symmetrical=False,
     )
+
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
 
     class Meta:
         verbose_name = 'Пользователь'
