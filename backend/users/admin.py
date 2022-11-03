@@ -13,7 +13,7 @@ class UserAdmin(admin.ModelAdmin):
         'first_name',
         'last_name',
     )
-    list_display_links = ('email',)
+    list_display_links = ('id', 'email')
     list_filter = ('username', 'email')
     search_fields = ('username', 'email')
     empty_value_display = '-пусто-'

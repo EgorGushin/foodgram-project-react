@@ -5,13 +5,13 @@ from django.db.models import CharField, EmailField, ManyToManyField
 class CustomUser(AbstractUser):
 
     username = CharField(
-        verbose_name='Уникальный username',
+        verbose_name='Nickname',
         max_length=150,
         unique=True,
         help_text='Укажите username от 3 до 150 букв',
     )
     email = EmailField(
-        verbose_name='Адрес электронной почты',
+        verbose_name='Электронная почта',
         max_length=254,
         unique=True,
         help_text='Введите адрес электронной почты'
@@ -37,8 +37,6 @@ class CustomUser(AbstractUser):
         symmetrical=False,
     )
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
 
     class Meta:
         verbose_name = 'Пользователь'
