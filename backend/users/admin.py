@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 
 User = get_user_model()
 
-
+@admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
         'id',
@@ -19,6 +19,4 @@ class UserAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
-
