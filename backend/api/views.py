@@ -1,5 +1,5 @@
-from django.http.response import HttpResponse
 from django.db.models import Sum
+from django.http.response import HttpResponse
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -8,15 +8,14 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import IngredientNameFilter, RecipeFilter
-from .models import (Favorite, Follow, Ingredient, AmountIngredient,
-                     Purchase, Recipe, Tag, User)
+from .models import (AmountIngredient, Favorite, Follow, Ingredient, Purchase,
+                     Recipe, Tag, User)
 from .paginators import CustomPagination
 from .permissions import IsOwnerOrAdminOrReadOnly
-from .serializers import (FavoritesSerializer, ListRecipeSerializer,
-                          IngredientSerializer, PurchaseSerializer,
-                          CreateUpdateRecipeSerializer,
-                          ShowFollowerSerializer, TagSerializer,
-                          UserSerializer)
+from .serializers import (CreateUpdateRecipeSerializer, FavoritesSerializer,
+                          IngredientSerializer, ListRecipeSerializer,
+                          PurchaseSerializer, ShowFollowerSerializer,
+                          TagSerializer, UserSerializer)
 
 
 class CustonUserViewSet(UserViewSet):

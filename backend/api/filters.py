@@ -1,6 +1,6 @@
 import django_filters as filters
 
-from .models import Ingredient,Recipe, User
+from .models import Ingredient, Recipe, User
 
 
 class IngredientNameFilter(filters.FilterSet):
