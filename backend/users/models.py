@@ -1,5 +1,10 @@
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField, EmailField, ManyToManyField
+from django.db.models import (CharField, EmailField, ManyToManyField,
+                              ForeignKey, Model, CASCADE, DateTimeField,
+                              UniqueConstraint)
+from django.contrib.auth import get_user_model
+
+# User = get_user_model()
 
 
 class CustomUser(AbstractUser):
@@ -43,3 +48,32 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f'{self.username}: {self.email}'
+
+
+class Follow(Model):
+    user = ForeignKey(
+        CustomUser,
+        on_delete=CASCADE,
+        related_name='follower'
+    )
+    author = ForeignKey(
+        CustomUser,
+        on_delete=CASCADE,
+        related_name='following'
+    )
+    subscription_date = DateTimeField(
+        auto_now=True,
+        verbose_name='Дата подписки',
+    )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = [
+            UniqueConstraint(
+                fields=['user', 'author'], name='follow_unique'
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.user} подписан на {self.author}'

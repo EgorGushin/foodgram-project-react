@@ -7,18 +7,18 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .filters import IngredientNameFilter, RecipeFilter
+from backend.utils.filters import IngredientNameFilter, RecipeFilter
 from .models import (AmountIngredient, Favorite, Follow, Ingredient, Purchase,
                      Recipe, Tag, User)
-from .paginators import CustomPagination
-from .permissions import IsOwnerOrAdminOrReadOnly
+from backend.utils.paginators import CustomPagination
+from backend.utils.permissions import IsOwnerOrAdminOrReadOnly
 from .serializers import (CreateUpdateRecipeSerializer, FavoritesSerializer,
                           IngredientSerializer, ListRecipeSerializer,
                           PurchaseSerializer, ShowFollowerSerializer,
                           TagSerializer, UserSerializer)
 
 
-class CustonUserViewSet(UserViewSet):
+class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     pagination_class = CustomPagination
     serializer_class = UserSerializer
@@ -80,7 +80,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
-    queryset = Ingredient.object.all()
+    queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny,)
     pagination_class = None
