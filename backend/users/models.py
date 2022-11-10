@@ -3,7 +3,6 @@ from django.db.models import CharField, EmailField, ManyToManyField
 
 
 class CustomUser(AbstractUser):
-
     username = CharField(
         verbose_name='Nickname',
         max_length=150,
@@ -36,7 +35,6 @@ class CustomUser(AbstractUser):
         to='self',
         symmetrical=False,
     )
-
 
     class Meta:
         verbose_name = 'Пользователь'

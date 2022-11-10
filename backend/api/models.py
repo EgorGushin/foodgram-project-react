@@ -16,7 +16,10 @@ class Tag(models.Model):
     color = models.CharField(
         max_length=7,
         verbose_name='Цветовой HEX-код',
-        validators=[RegexValidator(regex=r'^#([A-Fa-f0-9]{6})$')],
+        validators=[RegexValidator(
+            regex=r'^#([A-Fa-f0-9]{6})$',
+            message='Не корректный Цветовой HEX-код'
+        )],
         unique=True,
     )
     slug = models.SlugField(
@@ -86,7 +89,7 @@ class Recipe(models.Model):
         verbose_name='Тэги',
         help_text='Выберите подходящие тэги для рецепта',
     )
-    cooking_time = models.PositiveIntegerField(
+    cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
         validators=[MinValueValidator(
             1,
@@ -121,7 +124,7 @@ class AmountIngredient(models.Model):
     )
     amount = models.PositiveIntegerField(
         verbose_name='Количество ингредиента',
-        default=0,
+        default=1,
         validators=[MinValueValidator(
             1,
             'Количество ингредиента не может быть меньше одного.'
