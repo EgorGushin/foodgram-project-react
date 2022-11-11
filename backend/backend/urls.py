@@ -17,7 +17,7 @@ router.register('api/tags', TagViewSet, basename='tags')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth', include('djoser.urls.authtoken'))
+    path('api/auth/', include('djoser.urls.authtoken'))
 ]
 
 urlpatterns += router.urls

@@ -9,7 +9,6 @@ from tags.models import Tag
 from tags.serializers import TagSerializer, TagListField
 
 
-
 class ListRecipeSerializer(serializers.ModelSerializer):
     image = Base64ImageField(max_length=None, use_url=True)
     tags = TagSerializer(read_only=True, many=True)
@@ -124,7 +123,6 @@ class FavoritesSerializer(serializers.ModelSerializer):
 
 
 class PurchaseSerializer(FavoritesSerializer):
-
     class Meta:
         model = Purchase
 
