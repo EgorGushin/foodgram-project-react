@@ -2,9 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import (CharField, EmailField, ManyToManyField,
                               ForeignKey, Model, CASCADE, DateTimeField,
                               UniqueConstraint)
-from django.contrib.auth import get_user_model
-
-# User = get_user_model()
 
 
 class CustomUser(AbstractUser):
