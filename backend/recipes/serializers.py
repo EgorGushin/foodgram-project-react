@@ -3,19 +3,20 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from ingredients.serializers import IngredientSerializer
-from recipes.models import Recipe, Favorite, Purchase, \
-    AmountIngredient
+from recipes.models import Recipe, Favorite, Purchase, AmountIngredient
 from tags.models import Tag
 from tags.serializers import TagSerializer, TagListField
+
+from ingredients.serializers import IngredientAmountSerializer
 
 
 class ListRecipeSerializer(serializers.ModelSerializer):
     image = Base64ImageField(max_length=None, use_url=True)
     tags = TagSerializer(read_only=True, many=True)
     author = UserSerializer(read_only=True)
-    ingredients = IngredientSerializer(
+    ingredients = IngredientAmountSerializer(
         read_only=True,
-        many=True
+        many=True,
     )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
