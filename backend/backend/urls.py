@@ -10,10 +10,10 @@ from users.views import CustomUserViewSet
 
 router = DefaultRouter()
 
-router.register('users', CustomUserViewSet, basename='users')
-router.register('ingredients', IngredientViewSet, basename='ingredients')
-router.register('recipes', RecipeViewSet, basename='recipes')
-router.register('tags', TagViewSet, basename='tags')
+router.register('api/users', CustomUserViewSet, basename='users')
+router.register('api/ingredients', IngredientViewSet, basename='ingredients')
+router.register('api/recipes', RecipeViewSet, basename='recipes')
+router.register('api/tags', TagViewSet, basename='tags')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

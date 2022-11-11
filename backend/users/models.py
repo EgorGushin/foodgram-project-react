@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db.models import (CharField, EmailField, ManyToManyField,
                               ForeignKey, Model, CASCADE, DateTimeField,
@@ -47,14 +48,17 @@ class CustomUser(AbstractUser):
         return f'{self.username}: {self.email}'
 
 
+User = get_user_model()
+
+
 class Follow(Model):
     user = ForeignKey(
-        CustomUser,
+        User,
         on_delete=CASCADE,
         related_name='follower'
     )
     author = ForeignKey(
-        CustomUser,
+        User,
         on_delete=CASCADE,
         related_name='following'
     )
