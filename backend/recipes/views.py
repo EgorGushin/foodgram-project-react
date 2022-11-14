@@ -1,19 +1,19 @@
 from django.db.models import Sum
 from django.http import HttpResponse
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ingredients.models import Ingredient
-from recipes.models import Recipe, Favorite, Purchase, \
-    AmountIngredient
+from recipes.models import AmountIngredient, Favorite, Purchase, Recipe
+from recipes.serializers import ListRecipeSerializer
 from utils.filters import RecipeFilter
 from utils.paginators import CustomPagination
 from utils.permissions import IsOwnerOrAdminOrReadOnly
 
-from recipes.serializers import ListRecipeSerializer
+from recipes.serializers import CreateUpdateRecipeSerializer
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -30,7 +30,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
 
-    def recipe_post_method(self, request, AnySerializer, pk):
+    def _recipe_post_method(self, request, AnySerializer, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
 
@@ -46,7 +46,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def recipe_delete_method(self, request, AnyModel, pk):
+    def _recipe_delete_method(self, request, AnyModel, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
         favorites = get_object_or_404(

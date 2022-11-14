@@ -7,17 +7,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from users.models import Follow
+from users.serializers import ShowFollowerSerializer, UserSerializer
 from utils.paginators import CustomPagination
 from utils.permissions import IsOwnerOrAdminOrReadOnly
 
-from users.serializers import UserSerializer
-
-from users.serializers import ShowFollowerSerializer
+from utils.mixins import DisableEndPointDjoser
 
 User = get_user_model()
 
 
-class CustomUserViewSet(UserViewSet):
+class CustomUserViewSet(UserViewSet, DisableEndPointDjoser):
     queryset = User.objects.all()
     pagination_class = CustomPagination
     serializer_class = UserSerializer

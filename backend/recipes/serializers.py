@@ -2,12 +2,11 @@ from djoser.serializers import UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from ingredients.serializers import IngredientSerializer
-from recipes.models import Recipe, Favorite, Purchase, AmountIngredient
+from ingredients.serializers import (IngredientAmountSerializer,
+                                     IngredientSerializer)
+from recipes.models import AmountIngredient, Favorite, Purchase, Recipe
 from tags.models import Tag
-from tags.serializers import TagSerializer, TagListField
-
-from ingredients.serializers import IngredientAmountSerializer
+from tags.serializers import TagListField, TagSerializer
 
 
 class ListRecipeSerializer(serializers.ModelSerializer):
@@ -30,17 +29,15 @@ class ListRecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
-        if request.user.is_authenticated:
-            return Favorite.objects.filter(user=request.user,
-                                           recipe=obj).exists()
-        return False
+        if not request.user.is_authenticated:
+            return False
+        return Favorite.objects.filter(user=request.user, recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
-        if request.user.is_authenticated:
-            return Purchase.objects.filter(user=request.user,
-                                           recipe=obj).exists()
-        return False
+        if not request.user.is_authenticated:
+            return False
+        return Purchase.objects.filter(user=request.user, recipe=obj).exists()
 
 
 class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
@@ -55,39 +52,36 @@ class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
                   'is_in_shopping_cart', 'name', 'image', 'text',
                   'cooking_time')
 
-    def create(self, validate_data):
+    def for_create_and_update(self, validate_data):
         tags = validate_data.pop('tags')
-        image = validate_data.pop('image')
         ingredients = validate_data.pop('ingredients')
-        recipe = Recipe.objects.create(image=image, **validate_data)
         ingredients_list = []
         for ingredient in ingredients:
             ingredient_amount, status = (
                 AmountIngredient.objects.get_or_create(**ingredient)
             )
             ingredients_list.append(ingredient_amount)
+
+
+    def create(self, validate_data):
+        self.for_create_and_update(validate_data)
+        image = validate_data.pop('image')
+        recipe = Recipe.objects.create(image=image, **validate_data)
         recipe.ingredients.set(ingredients_list)
         recipe.tags.set(tags)
         return recipe
 
-    def update(self, instance, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
-        instance.name = validated_data.get('name', instance.name)
-        instance.image = validated_data.get('image', instance.image)
-        instance.text = validated_data.get('text', instance.text)
-        instance.text = validated_data.get('text', instance.text)
-        instance.cooking_time = validated_data(
+    def update(self, instance, validate_data):
+        self.for_create_and_update(validate_data)
+        instance.name = validate_data.get('name', instance.name)
+        instance.image = validate_data.get('image', instance.image)
+        instance.text = validate_data.get('text', instance.text)
+        instance.text = validate_data.get('text', instance.text)
+        instance.cooking_time = validate_data(
             'cooking_time',
             instance.cooking_time
         )
         instance.save()
-        ingredients_list = []
-        for ingredient in ingredients:
-            ingredient_amount, status = (
-                AmountIngredient.objects.get_or_create(**ingredient)
-            )
-            ingredients_list.append(ingredient_amount)
         instance.ingredients.set(ingredients_list)
         instance.tags.set(tags)
         return instance

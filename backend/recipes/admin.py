@@ -1,15 +1,12 @@
 from django.contrib import admin
 
-from recipes.models import Recipe
-
-from recipes.models import Favorite
-
-from recipes.models import Purchase, AmountIngredient
+from recipes.models import AmountIngredient, Favorite, Purchase, Recipe
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('author', 'name', 'favorited')
+    search_fields = ('name', 'author', 'tags')
 
     def favorited(self, obj):
         return Favorite.objects.filter(recipe=obj).count()

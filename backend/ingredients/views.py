@@ -1,9 +1,10 @@
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 
+from utils.filters import IngredientNameFilter
+
 from .models import Ingredient
 from .serializers import IngredientSerializer
-from utils.filters import IngredientNameFilter
 
 
 class IngredientViewSet(viewsets.ModelViewSet):

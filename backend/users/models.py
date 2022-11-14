@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
-from django.db.models import (CharField, EmailField, ManyToManyField,
-                              ForeignKey, Model, CASCADE, DateTimeField,
+from django.db.models import (CASCADE, CharField, DateTimeField, EmailField,
+                              ForeignKey, ManyToManyField, Model,
                               UniqueConstraint)
 
 
