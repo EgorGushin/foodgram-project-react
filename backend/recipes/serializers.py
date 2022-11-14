@@ -1,7 +1,9 @@
 from djoser.serializers import UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
 
+from ingredients.models import Ingredient
 from ingredients.serializers import (IngredientAmountSerializer,
                                      IngredientSerializer)
 from recipes.models import AmountIngredient, Favorite, Purchase, Recipe
@@ -10,7 +12,6 @@ from tags.serializers import TagListField, TagSerializer
 
 
 class ListRecipeSerializer(serializers.ModelSerializer):
-    image = Base64ImageField(max_length=None, use_url=True)
     tags = TagSerializer(read_only=True, many=True)
     author = UserSerializer(read_only=True)
     ingredients = IngredientAmountSerializer(
@@ -51,6 +52,27 @@ class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
                   'is_in_shopping_cart', 'name', 'image', 'text',
                   'cooking_time')
+
+    def validate_ingredients(self, val):
+        unique_ingredients = []
+        for data_ingredient in val:
+            ingredient = get_object_or_404(
+                Ingredient,
+                id=data_ingredient.get('id')
+            )
+            if ingredient in unique_ingredients:
+                raise serializers.ValidationError(
+                    f'{ingredient.name} дублируется.'
+                )
+            unique_ingredients.append(ingredient)
+
+            if int(data_ingredient.get('amount')) <1:
+                raise serializers.ValidationError(
+                    f'Значение {data_ingredient.get("amount")}'
+                    f'не корректно для {ingredient.name}.'
+                    f'Пожалуйста, исправьте.'
+                )
+        return val
 
     def for_create_and_update(self, validate_data):
         tags = validate_data.pop('tags')

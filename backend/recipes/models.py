@@ -47,11 +47,6 @@ class Recipe(models.Model):
             'Время приготовления не может быть меньше одной минуты.'
         )],
     )
-    is_favorited = models.BooleanField('В избранном', default=False),
-    is_in_shopping_cart = models.BooleanField(
-        'В списке покупок',
-        default=False
-    )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
         auto_now=True,

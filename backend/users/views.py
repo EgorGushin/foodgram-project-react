@@ -8,10 +8,9 @@ from rest_framework.response import Response
 
 from users.models import Follow
 from users.serializers import ShowFollowerSerializer, UserSerializer
+from utils.mixins import DisableEndPointDjoser
 from utils.paginators import CustomPagination
 from utils.permissions import IsOwnerOrAdminOrReadOnly
-
-from utils.mixins import DisableEndPointDjoser
 
 User = get_user_model()
 

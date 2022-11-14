@@ -8,12 +8,11 @@ from rest_framework.response import Response
 
 from ingredients.models import Ingredient
 from recipes.models import AmountIngredient, Favorite, Purchase, Recipe
-from recipes.serializers import ListRecipeSerializer
+from recipes.serializers import (CreateUpdateRecipeSerializer,
+                                 ListRecipeSerializer)
 from utils.filters import RecipeFilter
 from utils.paginators import CustomPagination
 from utils.permissions import IsOwnerOrAdminOrReadOnly
-
-from recipes.serializers import CreateUpdateRecipeSerializer
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -94,7 +93,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=('get',),
         permission_classes=[IsAuthenticated]
     )
-    def download_shopping_cart(self, request):
+    def get_ingredients_for_download(self, request):
         queryset = self.get_queryset()
         cart_objects = Purchase.objects.filter(user=request.user)
         recipes = queryset.filter(purchases__in=cart_objects)
@@ -102,6 +101,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ing_types = Ingredient.objects.filter(
             ingredients_amount__in=ingredients
         ).annotate(total=Sum('ingredients_amount__amount'))
+        return ing_types
+
+    def dowload_shopping_cart(self, ing_types):
         lines = [f'{ing_type.name}, {ing_type.total}'
                  f'{ing_type.measurement_unit}' for ing_type in ing_types]
         filename = 'shopping_ingredients.txt'
