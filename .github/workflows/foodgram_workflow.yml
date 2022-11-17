@@ -19,14 +19,14 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-          sudo rm -rf foodgram/
-          mkdir -p foodgram/
+          sudo rm -rf backend/
+          mkdir -p backend/
 
     - name: Copy files
       uses: garygrossgarten/github-action-scp@release
       with:
           local: infra/
-          remote: /home/${{ secrets.USER }}/foodgram/
+          remote: /home/${{ secrets.USER }}/backend/
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           privateKey: ${{ secrets.SSH_KEY }}
