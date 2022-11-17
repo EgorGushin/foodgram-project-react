@@ -82,7 +82,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           stack_file_name: docker-compose.yml
           script: |
-            cd foodgram/
+            cd backend/
             sudo fuser -k 80/tcp
             touch .env
             echo DEBUG=${{ secrets.DEBUG }} >> .env
