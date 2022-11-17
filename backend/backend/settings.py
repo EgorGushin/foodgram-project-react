@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 if SECRET_KEY is None:
     raise Exception('Проверьте SECRET_KEY, так как он не найден!')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
