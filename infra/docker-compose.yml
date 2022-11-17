@@ -9,7 +9,7 @@ services:
       - ./.env
 
   backend:
-    image: gushinegor/foodgram_backend:latest
+    image: gushinegor/backend:latest
     restart: always
     volumes:
       - static_value:/app/static/
