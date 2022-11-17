@@ -71,7 +71,9 @@ jobs:
             passphrase: ${{ secrets.PASSPHRASE }}
             stack_file_name: docker-compose.yml
             script: |
-              cd foodgram/
+              sudo docker pull gushinegor/foodgram-backend
+              sudo docker stop
+              sudo docker-compose rm web
               sudo fuser -k 80/tcp
               touch .env
               echo DEBUG=${{ secrets.DEBUG }} >> .env
