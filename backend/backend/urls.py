@@ -7,6 +7,8 @@ from recipes.views import RecipeViewSet
 from tags.views import TagViewSet
 from users.views import CustomUserViewSet
 
+from django.conf import settings
+
 router = DefaultRouter()
 
 router.register('api/users', CustomUserViewSet, basename='users')
@@ -19,5 +21,16 @@ urlpatterns = [
     path('api/auth/', include('djoser.urls.authtoken')),
     path('', include('djoser.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
+
+    urlpatterns += static(
+        settings.STATIC_URL,
+        document_root=settings.STATIC_ROOT
+    )
 
 urlpatterns += router.urls
