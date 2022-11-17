@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from ingredients.models import Ingredient
 from recipes.models import AmountIngredient, Favorite, Purchase, Recipe
 from recipes.serializers import (CreateUpdateRecipeSerializer,
-                                 ListRecipeSerializer)
+                                 FavoritesSerializer, ListRecipeSerializer,
+                                 PurchaseSerializer)
 from utils.filters import RecipeFilter
 from utils.paginators import CustomPagination
 from utils.permissions import IsOwnerOrAdminOrReadOnly
@@ -98,10 +99,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         cart_objects = Purchase.objects.filter(user=request.user)
         recipes = queryset.filter(purchases__in=cart_objects)
         ingredients = AmountIngredient.objects.filter(recipes__in=recipes)
-        ing_types = Ingredient.objects.filter(
+        return Ingredient.objects.filter(
             ingredients_amount__in=ingredients
         ).annotate(total=Sum('ingredients_amount__amount'))
-        return ing_types
 
     def dowload_shopping_cart(self, ing_types):
         lines = [f'{ing_type.name}, {ing_type.total}'
