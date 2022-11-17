@@ -66,7 +66,7 @@ class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
                 )
             unique_ingredients.append(ingredient)
 
-            if int(data_ingredient.get('amount')) <1:
+            if int(data_ingredient.get('amount')) < 1:
                 raise serializers.ValidationError(
                     f'Значение {data_ingredient.get("amount")}'
                     f'не корректно для {ingredient.name}.'
@@ -74,7 +74,7 @@ class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
                 )
         return val
 
-    def for_create_and_update(self, validate_data):
+    def create(self, validate_data):
         tags = validate_data.pop('tags')
         ingredients = validate_data.pop('ingredients')
         ingredients_list = []
@@ -83,10 +83,6 @@ class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
                 AmountIngredient.objects.get_or_create(**ingredient)
             )
             ingredients_list.append(ingredient_amount)
-
-
-    def create(self, validate_data):
-        self.for_create_and_update(validate_data)
         image = validate_data.pop('image')
         recipe = Recipe.objects.create(image=image, **validate_data)
         recipe.ingredients.set(ingredients_list)
@@ -94,7 +90,14 @@ class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validate_data):
-        self.for_create_and_update(validate_data)
+        tags = validate_data.pop('tags')
+        ingredients = validate_data.pop('ingredients')
+        ingredients_list = []
+        for ingredient in ingredients:
+            ingredient_amount, status = (
+                AmountIngredient.objects.get_or_create(**ingredient)
+            )
+            ingredients_list.append(ingredient_amount)
         instance.name = validate_data.get('name', instance.name)
         instance.image = validate_data.get('image', instance.image)
         instance.text = validate_data.get('text', instance.text)

@@ -13,6 +13,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     favorited.short_description = 'В избранном'
 
+
 @admin.register(Purchase)
 class PurchaseAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
