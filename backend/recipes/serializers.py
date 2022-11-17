@@ -6,7 +6,8 @@ from rest_framework.generics import get_object_or_404
 from ingredients.models import Ingredient
 from ingredients.serializers import (IngredientAmountSerializer,
                                      IngredientSerializer)
-from recipes.models import AmountIngredient, Favorite, Purchase, Recipe
+from recipes.models import (AmountIngredient, Favorite, Purchase, Recipe,
+                            IngredientInRecipe)
 from tags.models import Tag
 from tags.serializers import TagListField, TagSerializer
 
@@ -74,19 +75,37 @@ class CreateUpdateRecipeSerializer(serializers.ModelSerializer):
                 )
         return val
 
-    def create(self, validate_data):
-        tags = validate_data.pop('tags')
-        ingredients = validate_data.pop('ingredients')
-        ingredients_list = []
-        for ingredient in ingredients:
-            ingredient_amount, status = (
-                AmountIngredient.objects.get_or_create(**ingredient)
-            )
-            ingredients_list.append(ingredient_amount)
-        image = validate_data.pop('image')
-        recipe = Recipe.objects.create(image=image, **validate_data)
-        recipe.ingredients.set(ingredients_list)
+    # def create(self, validate_data):
+    #     tags = validate_data.pop('tags')
+    #     ingredients = validate_data.pop('ingredients')
+    #     ingredients_list = []
+    #     for ingredient in ingredients:
+    #         ingredient_amount, status = (
+    #             AmountIngredient.objects.get_or_create(**ingredient)
+    #         )
+    #         ingredients_list.append(ingredient_amount)
+    #     image = validate_data.pop('image')
+    #     recipe = Recipe.objects.create(image=image, **validate_data)
+    #     recipe.ingredients.set(ingredients_list)
+    #     recipe.tags.set(tags)
+    #     return recipe
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        ingredients = validated_data.pop('ingredients', None)
+        tags = validated_data.pop('tags', None)
+        recipe = Recipe.objects.create(author=request.user, **validated_data)
         recipe.tags.set(tags)
+        IngredientInRecipe.objects.bulk_create(
+            [
+                IngredientInRecipe(
+                    recipe=recipe,
+                    amount=ingredient['amount'],
+                    ingredient=ingredient['id'],
+                )
+                for ingredient in ingredients
+            ]
+        )
         return recipe
 
     def update(self, instance, validate_data):

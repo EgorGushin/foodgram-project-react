@@ -142,3 +142,26 @@ class Purchase(models.Model):
 
     def __str__(self):
         return f'Рецепт {self.recipe} в списке покупок у {self.user}'
+
+
+class IngredientInRecipe(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        verbose_name='Рецепт',
+        on_delete=models.CASCADE,
+        related_name='ingredient_recipe'
+    )
+    ingredient = models.ForeignKey(
+        Ingredient,
+        verbose_name='Ингредиент',
+        on_delete=models.CASCADE,
+        related_name='ingredient_recipe'
+    )
+    amount = models.PositiveSmallIntegerField(
+        verbose_name='Количество ингрeдиента',
+        help_text='Укажите количество ингрeдиента',
+        validators=(
+            MinValueValidator(
+                1, message='Количество не может быть меньше 1!'),
+        )
+    )

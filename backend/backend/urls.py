@@ -19,7 +19,6 @@ router.register('api/tags', TagViewSet, basename='tags')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('djoser.urls.authtoken')),
-    path('', include('djoser.urls')),
 ]
 
 if settings.DEBUG:
@@ -32,4 +31,5 @@ if settings.DEBUG:
         settings.STATIC_URL,
         document_root=settings.STATIC_ROOT
     )
+
 urlpatterns += router.urls
