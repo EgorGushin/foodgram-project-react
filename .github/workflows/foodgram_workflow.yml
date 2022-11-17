@@ -72,7 +72,7 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-backend
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend
             sudo docker-compose stop
-            sudo docker-compose rm backend
+            sudo docker-compose rm foodgram-backend
             sudo docker-compose rm frontend
             rm .env
             touch .env
