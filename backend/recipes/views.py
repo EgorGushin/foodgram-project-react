@@ -15,6 +15,8 @@ from utils.filters import RecipeFilter
 from utils.paginators import CustomPagination
 from utils.permissions import IsOwnerOrAdminOrReadOnly
 
+from ingredients.models import Ingredient
+
 
 class RecipesViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
@@ -78,21 +80,18 @@ class RecipesViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated, )
     )
     def download_shopping_cart(self, request):
-        shopping_cart = IngredientInRecipe.objects.filter(
-            recipe__shopping_cart_recipe__user=request.user
-        ).values_list(
-            'ingredient__name', 'ingredient__measurement_unit'
-        ).order_by(
-            'ingredient__name'
-        ).annotate(
-            ingredient_total=Sum('amount')
-        )
-        text = 'Cписок покупок: \n'
-        for ingredients in shopping_cart:
-            name, measurement_unit, amount = ingredients
-            text += f'{name}: {amount} {measurement_unit}\n'
-        response = HttpResponse(text, content_type='text/plain')
-        response['Content-Disposition'] = (
-            'attachment; filename="shopping-list.pdf"'
-        )
+        queryset = self.get_queryset()
+        cart_objects = Purchase.objects.filter(user=request.user)
+        recipes = queryset.filter(purchases__in=cart_objects)
+        ingredients = IngredientInRecipe.objects.filter(recipes__in=recipes)
+        ing_types = Ingredient.objects.filter(
+            ingredients_amount__in=ingredients
+        ).annotate(total=Sum('ingredients_amount__amount'))
+
+        lines = [f'{ing_type.name}, {ing_type.total}'
+                 f' {ing_type.measurement_unit}' for ing_type in ing_types]
+        filename = 'shopping_ingredients.txt'
+        response_content = '\n'.join(lines)
+        response = HttpResponse(response_content, content_type='text/plain')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
         return response
