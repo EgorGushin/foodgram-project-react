@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from recipes.models import (AmountIngredient, Favorite, Purchase, Recipe,
+from recipes.models import (Favorite, Purchase, Recipe,
                             IngredientInRecipe)
 
 
@@ -30,6 +30,3 @@ class PurchaseAdmin(admin.ModelAdmin):
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
-
-
-admin.site.register(AmountIngredient)
