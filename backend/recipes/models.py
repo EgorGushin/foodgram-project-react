@@ -100,7 +100,7 @@ class Purchase(models.Model):
     )
 
     class Meta:
-        ordering = ('-date_added',)
+        ordering = ('-user',)
         verbose_name = 'Покупка'
         verbose_name_plural = 'Покупки'
         constraints = [
