@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db.models import (CASCADE, CharField, DateTimeField, EmailField,
-                              ForeignKey, ManyToManyField, Model,
-                              UniqueConstraint)
+                              ForeignKey, Model, UniqueConstraint)
 
 
 class CustomUser(AbstractUser):
@@ -31,12 +30,6 @@ class CustomUser(AbstractUser):
     password = CharField(
         verbose_name='password',
         max_length=150
-    )
-    subscribe = ManyToManyField(
-        verbose_name='Подписка',
-        related_name='subscribers',
-        to='self',
-        symmetrical=False,
     )
 
     USERNAME_FIELD = 'email'

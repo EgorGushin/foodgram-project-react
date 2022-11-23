@@ -11,7 +11,10 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.SerializerMethodField()
+    is_subscribed = serializers.SerializerMethodField(
+        read_only=True,
+        source='get_is_subscribed'
+    )
 
     class Meta:
         model = User
@@ -22,17 +25,13 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'is_subscribed',
-            'password',
         )
-        extra_kwargs = {'password': {'write_only': True}}
-        read_only_fields = ('is_subscribed',)
 
     def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
+        user = self.context.get('request').user
+        if user.is_anonymous:
             return False
-        return Follow.objects.filter(user=request.user,
-                                     author=obj.id).exists()
+        return Follow.objects.filter(user=user, author=obj).exists()
 
 
 class CustomUserSerializer(UserSerializer):

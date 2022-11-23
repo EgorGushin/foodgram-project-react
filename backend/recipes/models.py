@@ -29,10 +29,11 @@ class Recipe(models.Model):
         help_text='Введите описание рецепта',
     )
     ingredients = models.ManyToManyField(
-        'AmountIngredient',
+        Ingredient,
         related_name='recipes',
         verbose_name='Ингредиенты',
         help_text='Выберите ингредиенты для рецепта',
+        through='IngredientInRecipe'
     )
     tags = models.ManyToManyField(
         Tag,
@@ -142,3 +143,34 @@ class Purchase(models.Model):
 
     def __str__(self):
         return f'Рецепт {self.recipe} в списке покупок у {self.user}'
+
+
+class IngredientInRecipe(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        verbose_name='Рецепт',
+        on_delete=models.CASCADE,
+        related_name='ingredient_recipe'
+    )
+    ingredient = models.ForeignKey(
+        Ingredient,
+        verbose_name='Ингредиент',
+        on_delete=models.CASCADE,
+        related_name='ingredient_recipe'
+    )
+    amount = models.PositiveSmallIntegerField(
+        verbose_name='Количество ингрeдиента',
+        help_text='Укажите количество ингрeдиента',
+        validators=(
+            MinValueValidator(
+                1, message='Количество не может быть меньше 1!'),
+        )
+    )
+
+    class Meta:
+        verbose_name = 'Количество ингредиента'
+        verbose_name_plural = 'Количество ингредиентов'
+
+    def __str__(self):
+        return (f'{self.ingredient.name} - {self.amount}'
+                f' {self.ingredient.measurement_unit}')
