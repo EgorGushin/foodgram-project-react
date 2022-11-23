@@ -7,7 +7,6 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from ingredients.models import Ingredient
 from recipes.models import Favorite, Purchase, Recipe
 from recipes.serializers import (CreateUpdateRecipeSerializer,
                                  FavoritesSerializer, ListRecipeSerializer,
