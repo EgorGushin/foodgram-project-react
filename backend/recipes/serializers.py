@@ -172,7 +172,7 @@ class FollowRecipeSerializer(serializers.ModelSerializer):
 class PurchaseSerializer(FavoritesSerializer):
     class Meta:
         model = Purchase
-        fields = '__all__'
+        fields = ('user', 'recipe')
 
         def validate(self, data):
             request = self.context.get('request')
