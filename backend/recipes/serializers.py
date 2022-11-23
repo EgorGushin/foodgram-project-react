@@ -30,30 +30,31 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 
 
 class FavoritesSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source='recipe.id')
-    name = serializers.ReadOnlyField(source='recipe.name')
-    image = serializers.ReadOnlyField(source='recipe.image', read_only=True)
-    cooking_time = serializers.ReadOnlyField(source='recipe.cooking_time')
-
     class Meta:
         model = Favorite
-        fields = ('id', 'image', 'cooking_time', 'user', 'recipe')
-        extra_kwargs = {'user': {'write_only': True},
-                        'recipe': {'write_only': True}}
+        fields = ('user', 'recipe')
 
     def validate(self, data):
-        if Favorite.objects.filter(user=data['user'],
-                                   recipe=data['recipe']).exists():
+        request = self.context.get('request')
+        if not request or request.user.is_anonymous:
+            return False
+        recipe = data['recipe']
+        if request.user.favorite_user.filter(recipe=recipe).exists():
             raise serializers.ValidationError(
-                'Рецепт уже добавлен в избранное'
+                'Выбранный рецепт уже добавлен в избранные!'
             )
         return data
 
     def to_representation(self, instance):
         request = self.context.get('request')
         context = {'request': request}
-        return FollowRecipeSerializer(instance.recipe,
-                                      context=context).data
+        return FavoritePreviewSerializer(instance.recipe, context=context).data
+
+
+class FavoritePreviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class ListRecipeSerializer(serializers.ModelSerializer):
@@ -171,23 +172,20 @@ class FollowRecipeSerializer(serializers.ModelSerializer):
 class PurchaseSerializer(FavoritesSerializer):
     class Meta:
         model = Purchase
+        fields = '__all__'
 
-    def validate(self, data):
-        request = self.context.get('request')
-        recipe_id = data['recipe'].id
-        purchase_exists = Purchase.objects.filter(
-            user=request.user,
-            recipe_id=recipe_id
-        ).exists()
+        def validate(self, data):
+            request = self.context.get('request')
+            if not request or request.user.is_anonymous:
+                return False
+            recipe = data['recipe']
+            if request.user.shoping_cart_user.filter(recipe=recipe).exists():
+                raise serializers.ValidationError(
+                    'Выбранный рецепт уже добавлен в список покупок!'
+                )
+            return data
 
-        if purchase_exists:
-            raise serializers.ValidationError(
-                'В списке покупок уже есть такой рецепт.'
-            )
-        return data
-
-    def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return FollowRecipeSerializer(instance.recipe,
-                                      context=context).data
+        def to_representation(self, instance):
+            request = self.context.get('request')
+            context = {'request': request}
+            return ListRecipeSerializer(instance.recipe, context=context).data

@@ -73,10 +73,6 @@ class Favorite(models.Model):
         on_delete=models.CASCADE,
         related_name='favorite_recipe',
     )
-    date_added = models.DateTimeField(
-        auto_now=True,
-        verbose_name='Дата добавления',
-    )
 
     class Meta:
         verbose_name = 'Избранное'
@@ -101,10 +97,6 @@ class Purchase(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         related_name='purchases',
-    )
-    date_added = models.DateTimeField(
-        auto_now=True,
-        verbose_name='Дата добавления',
     )
 
     class Meta:
