@@ -43,4 +43,4 @@ docker exec -it minibaev_backend_1 python manage.py createsuperuser
 
 Проект запущен и доступен по [адресу](http://158.160.20.196/)
 
-### Автор: Гущин Егор.
+### Автор: Гущин Егор Александрович.
