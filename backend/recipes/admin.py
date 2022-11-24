@@ -15,6 +15,7 @@ class RecipeAdmin(admin.ModelAdmin):
     search_fields = ('name', 'author', 'tags')
     inlines = (IngredientInRecipeInline,)
     exclude = ('ingredients',)
+    filter_horizontal = ('tags',)
 
     def favorited(self, obj):
         return Favorite.objects.filter(recipe=obj).count()
