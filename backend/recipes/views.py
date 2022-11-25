@@ -29,7 +29,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         return CreateUpdateRecipeSerializer
 
     @action(
-        methods=('post', 'delete'),
+        methods=('post',),
         detail=True,
         url_path='favorite',
         permission_classes=(IsAuthenticated,),
@@ -45,6 +45,12 @@ class RecipesViewSet(viewsets.ModelViewSet):
         favorite = get_object_or_404(Favorite, user=user, recipe__id=pk)
         favorite.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @set_favorite.mapping.delete
+    def delete_favorite(self, request, pk=None):
+        return self.recipe_delete_method(
+            request, Favorite, pk
+        )
 
     @action(
         detail=True,
