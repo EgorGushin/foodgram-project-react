@@ -36,7 +36,6 @@ services:
       - static_value:/static/
       - media_value:/media/
       - ../frontend/build:/usr/share/nginx/html/
-      - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
       - ../docs/:/usr/share/nginx/html/api/docs/
     depends_on:
       - frontend
