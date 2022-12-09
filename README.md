@@ -9,8 +9,6 @@
 ## Технологии:
 Python 3.7, Django 2.2, DRF, Djoser, PostgreSQL, Docker
 
-![Workflow stat](https://github.com/EgorGushin/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
-
 <details>
 <summary><h2>Как запустить проект:</h2></summary>
 
